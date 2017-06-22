@@ -6,10 +6,6 @@ body {
     margin: 0 auto;
 }
 
-ul {
-    padding: 0;
-}
-
-il {
-    list-style-type: none;
+.todo-done {
+    text-decoration: line-through;
 }

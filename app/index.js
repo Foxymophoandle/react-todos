@@ -2,9 +2,9 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 require('./index.css');
 
-var App = require('./components/App');
+var TodosApp = require('./components/App');
 
 ReactDOM.render(
-  <App />,
+  <TodosApp />,
   document.getElementById('app')
 );
