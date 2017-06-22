@@ -1,0 +1,15 @@
+body {
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+ul {
+    padding: 0;
+}
+
+il {
+    list-style-type: none;
+}
