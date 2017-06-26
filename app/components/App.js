@@ -4,95 +4,85 @@
 var React = require('react');
 
 
-class TodoItem extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {done: props.todo.done};
-
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event) {
-        console.log(event.target.value);
-        this.setState({done: event.target.value !== 'on'});
-    }
-
-    render() {
-            return (
-                <form>
-                    <input type="checkbox" onChange={this.handleChange} defaultChecked={this.state.done}/>
-                    <li key={this.props.todo.id} className={this.state.done ? "todo-done" : "todo-active"}>
-                        {this.props.todo.text}
-                    </li>
-                </form>
-            )
-    }
+function TodoItem(props) {
+    return (<div>{props.todo.text}</div>);
 }
 
 
-function TodosList(props) {
+function TodoList(props){
 
-    const TodoList = props.todos.map((todo) =>
-        <div><TodoItem todo={todo}/></div>
+    var todo_items = props.todos.map((todo) =>
+        <li key={todo.id}><TodoItem todo={todo}/></li>
     );
-
     return (
-        <div>
-            <ul>{TodoList}</ul>
-        </div>
-    )
+        <ul>{todo_items}</ul>
+    );
 }
 
 
-class NewTodo extends React.Component {
+class AddTodo extends React.Component {
+
+    render(){
+        let input;
+
+        return (
+            <div>
+                 <form onSubmit={(e) => {
+                     e.preventDefault();
+                     this.props.add_todo(input.value);
+                     input.value = '';
+                 }}>
+                     <input ref={node => {input = node;}} />
+                 </form>
+            </div>
+        )
+    }
+}
+
+
+class TodoApp extends React.Component {
+
     constructor(props) {
         super(props);
-        this.state = {value: ''};
+        this.state = {todo_list: [
+            {'id': 1, 'text': 'first', 'done': false},
+            {'id': 2, 'text': 'second', 'done': false},
+            {'id': 3, 'text': 'third', 'done': true},
+        ]};
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleAddTodo = this.handleAddTodo.bind(this);
+        this.handleChangeTodoState = this.handleChangeTodoState.bind(this);
+        this.handleRemoveTodo = this.handleRemoveTodo.bind(this);
     }
 
-    handleChange(event) {
-        this.setState({value: event.target.value});
+    handleAddTodo(todo){
+        var new_id = this.state.todo_list.length + 1;
+        this.state.todo_list.push({'id': new_id, 'text': todo, 'done': false});
+        this.setState({todo_list: this.state.todo_list})
     }
 
-    handleSubmit(event) {
-        alert('A todo was submitted: ' + this.state.value);
-        event.preventDefault();
+    handleChangeTodoState(todo_id){
+
+    }
+
+    handleRemoveTodo(todo_id){
+
     }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Name:
-                    <input type="text" value={this.state.value} onChange={this.handleChange} />
-                </label>
-                <input type="submit" value="Submit" />
-            </form>
-        );
+            <div>
+                <AddTodo
+                    add_todo={this.handleAddTodo}
+                />
+                <TodoList
+                    todos={this.state.todo_list}
+                    remove_todo={this.handleRemoveTodo}
+                    change_todo={this.handleChangeTodoState}
+                />
+            </div>
+        )
     }
 }
 
-var TODOS = [
-    {'id': 1, 'text': 'first', 'done': false},
-    {'id': 2, 'text': 'second', 'done': false},
-    {'id': 3, 'text': 'third', 'done': true},
-];
-
-
-class TodosApp extends React.Component {
-
-  render() {
-    return (
-        <div>
-            <NewTodo />
-            <TodosList todos={TODOS} />
-        </div>
-    )
-  }
-}
-
-module.exports = TodosApp;
+module.exports = TodoApp;
