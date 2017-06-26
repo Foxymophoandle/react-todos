@@ -3,76 +3,8 @@
  */
 var React = require('react');
 
-
-class TodoItem extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.handleRemoveTodo = this.handleRemoveTodo.bind(this);
-    }
-
-    handleRemoveTodo(){
-        this.props.remove_todo(this.props.todo.id)
-    }
-
-    render (){
-        return (
-            <div>
-                {this.props.todo.text}
-                <input type="button" value="X" onClick={this.handleRemoveTodo} />
-            </div>
-        );
-    }
-}
-
-
-function TodoList(props){
-
-    var todo_items = props.todos.map((todo) =>
-        <li key={todo.id}>
-            <TodoItem
-                todo={todo}
-                remove_todo={props.remove_todo}
-            />
-        </li>
-    );
-    return (
-        <ul>{todo_items}</ul>
-    );
-}
-
-
-class AddTodo extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {todo_text: ''};
-
-        this.handleAddTodo = this.handleAddTodo.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event) {
-        this.setState({todo_text: event.target.value});
-    }
-
-    handleAddTodo(event) {
-        event.preventDefault();
-        this.props.add_todo(this.state.todo_text);
-        this.setState({todo_text: ''});
-    }
-
-    render(){
-
-        return (
-            <form onSubmit={this.handleAddTodo}>
-                <input type="text" value={this.state.todo_text} onChange={this.handleChange} />
-                <input type="submit" value="Submit" />
-            </form>
-        )
-    }
-}
+var AddTodo = require('./AddTodo');
+var TodoList = require('./TodoList');
 
 
 class TodoApp extends React.Component {
@@ -90,6 +22,7 @@ class TodoApp extends React.Component {
 
         this.handleAddTodo = this.handleAddTodo.bind(this);
         this.handleRemoveTodo = this.handleRemoveTodo.bind(this);
+        this.handleChangeTodo = this.handleChangeTodo.bind(this);
     }
 
     handleAddTodo(todo){
@@ -106,6 +39,17 @@ class TodoApp extends React.Component {
         this.setState({todo_list: cleaned_todos})
     }
 
+    handleChangeTodo(todo_id, done){
+        var todos = this.state.todo_list;
+        todos.forEach((todo) => {
+            if (todo.id === todo_id) {
+                todo.done = done;
+            }
+        });
+        console.log(done);
+        this.setState({todo_list: todos})
+    }
+
     render() {
         return (
             <div>
@@ -115,6 +59,7 @@ class TodoApp extends React.Component {
                 <TodoList
                     todos={this.state.todo_list}
                     remove_todo={this.handleRemoveTodo}
+                    change_todo={this.handleChangeTodo}
                 />
             </div>
         )
